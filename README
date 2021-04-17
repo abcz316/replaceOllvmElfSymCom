@@ -1,0 +1,23 @@
+本工具用于解决ollvm编译出来的Linux驱动文件，加载进内核会报错“please compile with -fno-common”的问题
+使用的前提是：需要在驱动的源码文件里面加入许多个全局的int变量定义。如：int xaa1, yaa1, xaa2, yaa2;
+接下来，启动本工具： ./main [目标驱动文件路径] [全局的int变量名1] [全局的int变量名2] [全局的int变量名3]....
+例如：
+
+	//驱动文件源码内：
+
+	int xaa1, yaa1;
+	int test1(int a) __attribute__((__annotate__(("bcf fla sub bcf_loop=1000 bcf_prob=100 split_num=1000"))))
+	{
+		int b = a + 2;
+		return b;
+	}
+
+	int xaa2, yaa2;
+	int test2(int a) __attribute__((__annotate__(("bcf fla sub bcf_loop=1000 bcf_prob=100 split_num=1000"))))
+	{
+		int b = a + 3;
+		return b;
+	}
+
+	//编译出ko驱动文件后，执行：
+	./main rwProcMem37.ko xaa1 yaa1 xaa2 yaa2
